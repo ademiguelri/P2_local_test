@@ -1,0 +1,11 @@
+apiVersion: 1
+ 
+providers:
+  - name: 'Thermostats'
+    folder: 'Climatizadores'
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 5
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards

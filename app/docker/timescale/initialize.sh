@@ -1,0 +1,10 @@
+psql --username "$POSTGRES_USER" <<EOF
+CREATE DATABASE test WITH OWNER $POSTGRES_USER;
+GRANT ALL PRIVILEGES ON DATABASE test TO $POSTGRES_USER;
+
+\c test
+CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
+
+CREATE TABLE therm (id VARCHAR (10), datetime TIMESTAMP, temp FLOAT, state VARCHAR (10), target INTEGER);
+SELECT create_hypertable('therm', 'datetime');
+EOF

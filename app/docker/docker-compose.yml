@@ -1,0 +1,41 @@
+services:
+  timescale:
+    image: timescale/timescaledb:latest-pg14
+    container_name: "timescale"
+    ports: 
+      - 5432:5432
+    volumes:
+      - ./timescale/initialize.sh:/docker-entrypoint-initdb.d/init-user-db.sh
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=test
+    networks:
+      - gateway
+
+  grafana:
+    build:
+      context: ./grafana
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+    user: '104'
+    environment:
+      - GRAFANA_DATA_HOST=timescale:5432
+      - GF_INSTALL_PLUGINS=https://github.com/cloudspout/cloudspout-button-panel/releases/download/7.0.23/cloudspout-button-panel.zip;cloudspout-button-panel
+    networks:
+      - gateway
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - 5050:80
+    networks:
+      - gateway
+
+networks:
+  gateway:
