@@ -10,19 +10,20 @@ var_list = []
 value_list = []
 id = 'ns=2;s=V'
 power_value = True
+URL = "opc.tcp://0.0.0.0:4840"
 
 # user manager
-def user_manager(isession, username, password):
-    print(isession, username, password)
-    isession.user = UserManager.User
-    return username in config.users_db and password == config.users_db[username]
+# def user_manager(isession, username, password):
+#     print(isession, username, password)
+#     isession.user = UserManager.User
+#     return username in config.users_db and password == config.users_db[username]
 
 def start_server(stateMachine, count):
     global power_value
     TARGET = stateMachine[0].target
     POWER = stateMachine[0].power
     server = Server()
-    server.set_endpoint(config.URL)
+    server.set_endpoint(URL)
 
     # load server certificate and private key. This enables endpoints
     # with signing and encryption.
@@ -40,7 +41,7 @@ def start_server(stateMachine, count):
     server.set_security_IDs(["Username"])
 
     # set the user_manager function
-    server.user_manager.set_user_manager(user_manager)
+    # server.user_manager.set_user_manager(user_manager)
     node =  server.get_objects_node()
     custom_obj_type = node.add_object_type(id, "Thermostats")
 
@@ -68,10 +69,10 @@ def start_server(stateMachine, count):
     var_list = add_variables(count, stateMachine, obj_list)
 
     server.start()
-    print("Server started at {}".format(config.URL))
+    print("Server started at {}".format(URL))
 
     for n in range(int(count)):
-    #     var_list[n].target.set_value(TARGET)
+        # var_list[n].target.set_value(TARGET)
         var_list[n].power.set_value(POWER)
 
     while True:

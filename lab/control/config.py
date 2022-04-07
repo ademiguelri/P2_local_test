@@ -1,4 +1,3 @@
-URL = "opc.tcp://0.0.0.0:4840"
 start_temp = 15
 start_target = 24
 start_temp_max = 25

@@ -7,9 +7,15 @@ import random
 import json
 
 CONNECTION = "postgres://"+config.username+":"+config.password+"@"+config.host+":"+config.port+"/"+config.dbName
-query_create_table = "CREATE TABLE therm (id VARCHAR (10), datetime TIMESTAMP, temp FLOAT, state VARCHAR (10), target INTEGER);"
-query_create_hypertable = "SELECT create_hypertable('therm', 'datetime');"
-drop_table = "DROP TABLE therm;"
+
+# # Discomment for intensive tests, code for not restart db docker
+# query_create_table = "CREATE TABLE therm (id VARCHAR (10), datetime TIMESTAMP, temp FLOAT, state VARCHAR (10), target INTEGER);"
+# query_create_hypertable = "SELECT create_hypertable('therm', 'datetime');"
+# drop_table = "DROP TABLE therm;"
+
+# # User and password for opc ua security
+# usernameOPC = 'user1'
+# passwordOPC = 'passwd1'
 
 lap = 1
 id = 'ns=2;s=V'
@@ -17,6 +23,9 @@ therm_id = ''
 temp = ''
 state = ''
 target = ''
+client_refresh = 1
+target = 15
+th_selection = -1
 
 def start_client():
     therm_list = []
@@ -29,25 +38,26 @@ def start_client():
 
     client = Client(config.URL)
     try:
-        client.set_user(config.usernameOPC)
-        client.set_password(config.passwordOPC)
+        # # User and password for opc ua security
+        # client.set_user(config.usernameOPC)
+        # client.set_password(config.passwordOPC)
         client.connect()
         print("Client connected")
     except:
         print('Error connecting to server')
     else:
-        with psycopg2.connect(CONNECTION) as conn:
-            cursor = conn.cursor()
-            cursor.execute(drop_table)
-            cursor.execute(query_create_table)
-            conn.commit()
-            cursor.execute(query_create_hypertable)
-            conn.commit()
-            cursor.close()
+        
+        # # Discomment for intensive tests, code for not restart db docker
+        # with psycopg2.connect(CONNECTION) as conn:
+        #     cursor = conn.cursor()
+        #     cursor.execute(drop_table)
+        #     cursor.execute(query_create_table)
+        #     conn.commit()
+        #     cursor.execute(query_create_hypertable)
+        #     conn.commit()
+        #     cursor.close()
 
         root = client.get_root_node()
-        
-        # print("Root node is: {:s} ".format(str(root)))
 
         def browse_recursive(node):
             for childId in node.get_children():
